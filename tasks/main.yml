@@ -1,0 +1,27 @@
+---
+
+- name: Create the awscli directory
+  file:
+    path: /usr/local/awscli
+    state: directory
+    mode: '0755'
+
+- name: Check if aws bin exists
+  stat:
+    path: /usr/local/bin/aws
+  register: aws_bin
+
+
+- name: Download awscliv2.zip
+  shell: 'curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip'
+  when: aws_bin.stat.exists == False
+
+- name: extract awscliv2.zip
+  unarchive:
+    src: /tmp/awscliv2.zip
+    dest: /tmp/
+  when: aws_bin.stat.exists == False
+
+- name: run the ascliv2 install 
+  command: /tmp/aws/install
+  when: aws_bin.stat.exists == False
